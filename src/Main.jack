@@ -1,2 +1,9 @@
 class Main {
+    field int x , y ; 
+    static int pointCount ; 
+    function void main ( ) {
+       var String nome;
+       let nome = "teste";
+       return;
+      }
 }

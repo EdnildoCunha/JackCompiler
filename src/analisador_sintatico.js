@@ -24,20 +24,12 @@ var AnalisadorSintatico = /** @class */ (function () {
                 }
                 console.log('Jack code');
                 _this.jackFile = data.split("\n");
+                console.log('CONTENT JACK', jackFile);
                 _this.compileClass();
+                console.log('CONTENT XML ');
+                console.log(_this.xmlContent);
+                _this.writeXML();
             });
-            //const data = fs.readFileSync(jackFile, 'utf8');
-            //console.log(data); 
-            //this.jackFile = data.split("\n");
-            /*this.XMLFile = fs.readFile('compile.xml', 'utf8', (err, data)=>{
-                if (err)
-                {
-                    console.log(err);
-                    throw err;
-                }
-                console.log('xml file ', data);
-            })*/
-            //this.compileClass();
         }
         catch (e) {
             console.log('Error:', e.stack);
@@ -45,127 +37,140 @@ var AnalisadorSintatico = /** @class */ (function () {
     }
     AnalisadorSintatico.prototype.compileClass = function () {
         console.log('entered compileClass');
-        this.writeXML("<class>");
+        this.writeXMLContent("<class>\n");
         this.tokenizer.advance();
-        setTimeout(function () {
-            console.log('3 second passed');
-        }, 3500);
         //aqui  precisa adicionar o arquivo
         if (this.tokenizer.keyWord() != 'class') {
             //wait for a class here
+            console.log('RETORNOU NO KEYWORD CLASS');
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
+        console.log('expected identifier ');
+        console.log(this.tokenizer.identifier());
+        //here wait for a  name class
         if (!this.tokenizer.identifier()) {
+            console.log('RETORNOU NO IDENTIFIE CLASS');
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (this.tokenizer.symbol() != "{") {
+            console.log('RETORNOU NO SYMBLE {');
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //verifica se a alguma declaração de variáveis
-        while (this.tokenizer.keyWord().indexOf("static") != -1 ||
-            this.tokenizer.keyWord().indexOf("field") != -1) {
+        //console.log(this.tokenizer.keyWord())
+        //console.log('FIRST WHILE 1 ', this.tokenizer.keyWord().indexOf("static"));
+        //console.log('FIRST WHILE 2 ', this.tokenizer.keyWord().indexOf("field"));
+        while (["static", "field"].includes(this.tokenizer.keyWord())
+        //this.tokenizer.keyWord().indexOf("static") != -1 ||
+        //this.tokenizer.keyWord().indexOf("field") != -1
+        ) {
             this.compileClassVarDec();
         }
+        //console.log('FIRST WHILE 3 ', ["constructor", "function", "method"].includes(this.tokenizer.keyWord()));
         while (["constructor", "function", "method"].includes(this.tokenizer.keyWord())) {
             this.compileSubtoutine();
         }
-        //AJUSTAR AQUI    
+        //await for close }    
         if (this.tokenizer.symbol() != "}") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
-        this.writeXML("</class>");
+        this.writeXMLContent(this.tokenizer.printToken());
+        this.writeXMLContent("<class>\n");
     };
     AnalisadorSintatico.prototype.compileClassVarDec = function () {
         console.log('entered compileVardDec');
-        this.writeXML("<classVarDec>");
+        this.writeXMLContent("<classVarDec>\n");
         //compiles a declaration when it is a field or static 
+        console.log('token varDec ', this.tokenizer.keyWord());
         if (!["static", "field"].includes(this.tokenizer.keyWord())) {
+            console.log('RETURNED IN VAR DEC');
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (!this.tokenizer.identifier() && !["int", "char", "boolean"].includes(this.tokenizer.keyWord())) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (!this.tokenizer.identifier()) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        //check for and varname
+        //check for varname
         while (this.tokenizer.symbol() == ",") {
             this.tokenizer.advance();
             //wait for identifier
             if (!this.tokenizer.identifier()) {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
         }
         if (this.tokenizer.symbol() != ";") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</classVarDec>");
+        this.writeXMLContent("</classVarDec>\n");
     };
     AnalisadorSintatico.prototype.compileSubtoutine = function () {
         console.log('entered compileSuboutine');
-        this.writeXML("<subroutineDec>");
+        this.writeXMLContent("<subroutineDec>\n");
         //compile constructor, function or method
+        console.log('SUBROUTINE KEYWORD ', this.tokenizer.keyWord());
         if (!["constructor", "function", "method"].includes(this.tokenizer.keyWord())) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        if (!this.tokenizer.identifier() &&
-            !["void", "int", "char", "boolean"].includes(this.tokenizer.keyWord())) {
+        if (!this.tokenizer.identifier() && !["void", "int", "char", "boolean"].includes(this.tokenizer.keyWord())) {
+            console.log('RETURNED IN FUNCTION EXPECTED');
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait for a function name
         if (!this.tokenizer.identifier()) {
+            console.log('RETURNED WAIT FUNCTION NAME');
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        //check parameter list
-        //this.compileList();
         //await )
         if (this.tokenizer.symbol() != "(") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait for parameter list
-        this.writeXML("<parameterList>");
+        this.writeXMLContent("<parameterList>\n");
         this.compileExpressionList(); //CHECAR AQUI
-        this.writeXML("</parameterList>");
+        this.writeXMLContent("</parameterList>\n");
         if (this.tokenizer.symbol() != ")") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
-        this.writeXML("<subroutineBody>");
+        this.writeXMLContent(this.tokenizer.printToken());
+        this.writeXMLContent("<subroutineBody>\n");
         this.tokenizer.advance();
         if (this.tokenizer.symbol() != "{") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         //wait for var declaration
         this.tokenizer.advance();
+        console.log('CURRENT  WHILE');
         while (this.tokenizer.keyWord() == "var") {
             this.compileVarDec();
         }
+        console.log('NEXT WHILE');
         //wait statments 
         while (["let", "if", "while", "do", "return"].includes(this.tokenizer.keyWord())) {
             this.compileStatments();
@@ -174,82 +179,113 @@ var AnalisadorSintatico = /** @class */ (function () {
         if (this.tokenizer.symbol() != "}") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</subroutineBody");
-        this.writeXML("</subroutineDec>");
+        this.writeXMLContent("</subroutineBody");
+        this.writeXMLContent("</subroutineDec>\n");
     };
     AnalisadorSintatico.prototype.compileParameterList = function () {
-        console.log('entered compileParameterList');
-        if (!["void", "int", "char", "boolean"].includes(this.tokenizer.keyWord()) && !this.tokenizer.identifier()) {
+        if (this.tokenizer.tokenType() != 'identifier') {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        console.log('entered compileParameterList');
+        if (!["void", "int", "char", "boolean"].includes(this.tokenizer.keyWord()) && !this.tokenizer.identifier()) {
+            console.log('PARAMETER LIST RETURNED FIRS IF ');
+            return false;
+        }
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait for var name
         if (!this.tokenizer.identifier()) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
+        console.log('RETURNED , ', this.tokenizer.symbol() == ",");
         while (this.tokenizer.symbol() == ",") {
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             if (!["int", "char", "boolean"].includes(this.tokenizer.keyWord()) && !this.tokenizer.identifier()) {
+                console.log('RETURNED TT ', this.tokenizer.symbol() == ",");
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             //wait for var name
             if (!this.tokenizer.identifier()) {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
         }
     };
     AnalisadorSintatico.prototype.compileVarDec = function () {
         console.log('entered compileVarDec');
-        this.writeXML("<varDec>");
+        this.writeXMLContent("<varDec>\n");
         //wait for a var declaration
         if (this.tokenizer.keyWord() != "var") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //expected a var type
         if (!["int", "char", "boolean"].includes(this.tokenizer.keyWord()) && !this.tokenizer.identifier()) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        if (this.tokenizer.tokenType() != this.tokenizer.tokenType() &&
-            this.tokenizer.tokenType() == "identifier") { //JackTokenizer.Identifier
+        if (
+        //this.tokenizer.tokenType() != this.tokenizer.tokenType() 
+        //&& 
+        this.tokenizer.tokenType() == "identifier") {
             return false;
         }
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         while (this.tokenizer.symbol() == ",") {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             if (!this.tokenizer.identifier()) {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
         }
         if (this.tokenizer.symbol() != ";") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</varDec>");
+        this.writeXMLContent("</varDec>\n");
     };
     AnalisadorSintatico.prototype.compileStatments = function () {
         console.log('entered compileStatement');
         'wait for a sequence of statements, not includind {}';
-        this.writeXML("<statements>");
+        this.writeXMLContent("<statements>\n");
+        console.log('STATE CONDITION 1 ', ["let", "if", "while", "do", "return"].includes(this.tokenizer.keyWord()));
+        console.log('KEYWORD STATE ', this.tokenizer.keyWord());
         while (["let", "if", "while", "do", "return"].includes(this.tokenizer.keyWord())) {
-            switch (this.tokenizer.keyWord()) {
-                case "left":
+            //CHECAR AQUI;
+            var _token = this.tokenizer.keyWord();
+            if (_token == "left") {
+                this.compileLet();
+            }
+            if (_token == "if") {
+                this.compileIf();
+            }
+            if (_token == "while") {
+                this.compileWhile();
+            }
+            if (_token == "do") {
+                this.compileDo();
+            }
+            if (_token == "return") {
+                this.compileReturn();
+            }
+            /*switch(this.tokenizer.keyWord())
+            {
+                case "let":
+                    ///console.log('LET')
                     this.compileLet();
                     break;
                 case "if":
@@ -264,110 +300,111 @@ var AnalisadorSintatico = /** @class */ (function () {
                 case "return":
                     this.compileReturn();
                     break;
-            }
+            }*/
         }
-        this.writeXML("</statements>");
+        this.writeXMLContent("</statements>\n");
     };
     AnalisadorSintatico.prototype.compileDo = function () {
         console.log('entered compileDo');
-        this.writeXML("<doStatement>");
+        this.writeXMLContent("<doStatement>\n");
         if (this.tokenizer.keyWord() != "do") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait subroutine
+        //CHECAR AQUI
         this.compileSubtoutine();
         //wait for ;
         if (this.tokenizer.symbol() != ";") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</doStatement>");
+        this.writeXMLContent("</doStatement>\n");
     };
     AnalisadorSintatico.prototype.compileLet = function () {
         console.log('entered compileLet');
         //wait for a let statement
-        this.writeXML("<letStatement>");
+        this.writeXMLContent("<letStatement>\n");
         if (this.tokenizer.keyWord() != "let") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (!this.tokenizer.identifier()) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (this.tokenizer.symbol() == "[") {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileExpression();
             if (this.tokenizer.symbol() != "]") {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
         }
         //wait for =
         if (this.tokenizer.symbol() != "=") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         this.compileExpression();
         if (this.tokenizer.symbol() != ";") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</letStatement>");
+        this.writeXMLContent("</letStatement>\n");
     };
     AnalisadorSintatico.prototype.compileWhile = function () {
         console.log('entered compileWhile');
-        this.writeXML("whileStatement>");
+        this.writeXMLContent("whileStatement>\n");
         //compile wait statement
         if (this.tokenizer.keyWord() != 'while') {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait for a (
         if (this.tokenizer.symbol() != "(") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         this.compileExpression();
         //wait for a )
         if (this.tokenizer.symbol() != ")") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait for a {
         if (this.tokenizer.symbol() != "{") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         this.compileStatments();
         //wait for a }
         if (this.tokenizer.symbol() != "}") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</whileStatement>");
+        this.writeXMLContent("</whileStatement>\n");
     };
     AnalisadorSintatico.prototype.compileReturn = function () {
         console.log('entered compileReturn');
-        this.writeXML("<returnStatement>");
+        this.writeXMLContent("<returnStatement>\n");
         if (this.tokenizer.keyWord() != "return") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (this.tokenizer.symbol() != ";") {
             //wait for a expression
@@ -376,113 +413,113 @@ var AnalisadorSintatico = /** @class */ (function () {
         if (this.tokenizer.symbol() != ";") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
-        this.writeXML("</returnStatement");
+        this.writeXMLContent("</returnStatement");
     };
     AnalisadorSintatico.prototype.compileIf = function () {
         console.log('entered compileIf');
-        this.writeXML("<ifStatement>");
+        this.writeXMLContent("<ifStatement>\n");
         if (this.tokenizer.keyWord() != "if") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //wait for a (
         if (this.tokenizer.symbol() != "(") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         this.compileExpression();
         //wait for )
         if (this.tokenizer.symbol() != ")") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         //expect {
         if (this.tokenizer.symbol() != "{") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         this.compileStatments();
         //wait for a }
         if (this.tokenizer.symbol() != "}") {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (this.tokenizer.keyWord() == "else") {
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileStatments();
             if (this.tokenizer.symbol() != "}") {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
         }
-        this.writeXML("</ifStatement>");
+        this.writeXMLContent("</ifStatement>\n");
     };
     AnalisadorSintatico.prototype.compileExpression = function () {
         console.log('entered compileExpression');
-        this.writeXML("<expression>");
+        this.writeXMLContent("<expression>\n");
         this.compileTerm();
-        while (["+", "-", "*", "/", "&", "|", "<", ">", "="].includes(this.tokenizer.symbol())) {
-            this.writeXML(this.tokenizer.printToken());
+        while (["+", "-", "*", "/", "&", "|", "<", ">\n", "="].includes(this.tokenizer.symbol())) {
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileTerm();
         }
-        this.writeXML("</expression>");
+        this.writeXMLContent("</expression>\n");
     };
     AnalisadorSintatico.prototype.compileTerm = function () {
         console.log('entered compileTerm');
-        this.writeXML("<term>");
-        var thisisterm = false;
+        this.writeXMLContent("<term>\n");
+        var term = false;
         if (this.tokenizer.intVal()) {
-            thisisterm = true;
-            this.writeXML(this.tokenizer.printToken());
+            term = true;
+            this.writeXMLContent(this.tokenizer.printToken());
         }
         else if (this.tokenizer.stringVal()) {
-            thisisterm = true;
-            this.writeXML(this.tokenizer.printToken());
+            term = true;
+            this.writeXMLContent(this.tokenizer.printToken());
         }
         else if (this.tokenizer.keyWord()) {
-            var keyterm = this.tokenizer.keyWord();
-            if (!["true", "false", "null", "this"].includes(keyterm)) {
+            if (!["true", "false", "null", "this"].includes(this.tokenizer.keyWord())) {
                 return false;
             }
-            thisisterm = true;
-            this.writeXML(this.tokenizer.printToken());
+            term = true;
+            this.writeXMLContent(this.tokenizer.printToken());
         }
         else if (this.tokenizer.symbol() == "(") {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileExpression();
             if (this.tokenizer.symbol() != ")") {
                 return false;
             }
-            thisisterm = true;
-            this.writeXML(this.tokenizer.printToken());
+            term = true;
+            this.writeXMLContent(this.tokenizer.printToken());
         }
         else if (["-", "~"].includes(this.tokenizer.symbol())) {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileTerm();
         }
         else if (this.tokenizer.identifier()) {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             if (this.tokenizer.symbol() == "[") {
-                this.writeXML(this.tokenizer.printToken());
+                this.writeXMLContent(this.tokenizer.printToken());
                 this.tokenizer.advance();
                 this.compileExpression();
                 if (this.tokenizer.symbol() != "]") {
                     return false;
                 }
-                thisisterm = true;
-                this.writeXML(this.tokenizer.printToken());
+                term = true;
+                this.writeXMLContent(this.tokenizer.printToken());
             }
             else if (this.tokenizer.symbol() == "(") {
                 this.tokenizer.advance();
@@ -492,83 +529,83 @@ var AnalisadorSintatico = /** @class */ (function () {
                 if (this.tokenizer.symbol() != ")") {
                     return false;
                 }
-                thisisterm = true;
-                this.writeXML(this.tokenizer.printToken());
+                term = true;
+                this.writeXMLContent(this.tokenizer.printToken());
             }
             else if (this.tokenizer.symbol() == ".") {
-                this.writeXML(this.tokenizer.printToken());
+                this.writeXMLContent(this.tokenizer.printToken());
                 this.tokenizer.advance();
                 if (!this.tokenizer.identifier()) {
                     return false;
                 }
-                this.writeXML(this.tokenizer.printToken());
+                this.writeXMLContent(this.tokenizer.printToken());
                 this.tokenizer.advance();
                 if (this.tokenizer.symbol() != "(") {
                     return false;
                 }
-                this.writeXML(this.tokenizer.printToken());
+                this.writeXMLContent(this.tokenizer.printToken());
                 this.tokenizer.advance();
                 this.compileExpressionList();
                 if (this.tokenizer.symbol() != ")") {
                     return false;
                 }
-                thisisterm = true;
-                this.writeXML(this.tokenizer.printToken());
+                term = true;
+                this.writeXMLContent(this.tokenizer.printToken());
             }
         }
-        if (thisisterm = true) {
+        if (term = true) {
             this.tokenizer.advance();
         }
-        this.writeXML("</term>");
+        this.writeXMLContent("</term>\n");
     };
     AnalisadorSintatico.prototype.compileExpressionList = function () {
         console.log('entered compileExpressionList');
-        this.writeXML("<expressionList>");
+        this.writeXMLContent("<expressionList>\n");
         this.compileExpression();
         while (this.tokenizer.symbol() == ",") {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileExpression();
         }
-        this.writeXML("</expressionList>");
+        this.writeXMLContent("</expressionList>\n");
     };
     AnalisadorSintatico.prototype.compileSubroutineCall = function () {
         console.log('entered compileSubroutineCall');
         if (!this.tokenizer.identifier()) {
             return false;
         }
-        this.writeXML(this.tokenizer.printToken());
+        this.writeXMLContent(this.tokenizer.printToken());
         this.tokenizer.advance();
         if (this.tokenizer.symbol() == "(") {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileExpressionList();
             //wait for )
             if (this.tokenizer.symbol() != ")") {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
         }
         else if (this.tokenizer.symbol() == ".") {
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             //wait a identifier for method name
             if (!this.tokenizer.identifier()) {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             //wait for a (
             if (this.tokenizer.symbol() != "(") {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
             this.tokenizer.advance();
             this.compileExpressionList();
             if (this.tokenizer.symbol() != ")") {
                 return false;
             }
-            this.writeXML(this.tokenizer.printToken());
+            this.writeXMLContent(this.tokenizer.printToken());
         }
         else {
             return false;
@@ -579,11 +616,14 @@ var AnalisadorSintatico = /** @class */ (function () {
     {
         this.XMLFile += expression;
     }*/
-    AnalisadorSintatico.prototype.writeXML = function (xmlContent) {
-        console.log(xmlContent);
-        /*fs.writeFile('compile.xml', xmlContent, (err)=>{
-            console.log(err)
-        })*/
+    AnalisadorSintatico.prototype.writeXMLContent = function (xmlContent) {
+        this.xmlContent += xmlContent;
+    };
+    AnalisadorSintatico.prototype.writeXML = function () {
+        console.log(this.xmlContent);
+        fs.writeFile('compile.xml', this.xmlContent, function (err) {
+            console.log(err);
+        });
     };
     return AnalisadorSintatico;
 }());

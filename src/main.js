@@ -1,46 +1,42 @@
 "use strict";
 exports.__esModule = true;
-//import { AnalisadorSintatico }  from './analisador_sintatico';
-var fs = require("fs");
+var analisador_sintatico_1 = require("./analisador_sintatico");
+//import * as fs from "fs";
 //import { Tokenizer } from './app';
 //new Tokenizer('Main.jack');
-//new AnalisadorSintatico('Main.jack');
+new analisador_sintatico_1.AnalisadorSintatico('./Main.jack');
 ////t.compileClass();
-function writeXMLT(xmlContent) {
-    fs.writeFile('./compile.xml', xmlContent, function (err) {
-        console.log(err);
-    });
+/*function writeXMLT(xmlContent:string){
+        fs.writeFile('./compile.xml', xmlContent, (err)=>{
+            console.log(err)
+        })
 }
-//let contentXML:any = '';
-/*fs.readFile('./compile.xml', 'utf8', (err, data)=>{
-    if (err)
-    {
-        console.log(err);
-        throw err;
-    }
-    console.log('xml file ', data);
+
+let contentXML:any = '';
+
+const teste:string[] = [
+    `<token>test00</token>`,
+    `<token>test01</token>`
+]
+
+fs.writeFile('./compile.xml', '<tokenizer>', (err)=>{
+    console.log(err)
 })
-*/
-var teste = [
-    'teste0',
-    'teste1',
-    'test02'
-];
-fs.writeFile('./compile.xml', '<tokenizer>', function (err) {
-    console.log(err);
-});
-//contentXML+= '<tokenizer>';
-for (var _i = 0, teste_1 = teste; _i < teste_1.length; _i++) {
-    var token = teste_1[_i];
-    //writeXMLT(token);   
-    //contentXML += token;
-    console.log(token);
-    fs.writeFile('./compile.xml', token, function (err) {
-        console.log(err);
-    });
+
+contentXML+= '<tokenizer>';
+
+
+for(let token of teste)
+{
+   console.log(token);
+   contentXML += token;
 }
-//contentXML+= '</tokenizer>';
-//console.log(contentXML);
-/*fs.writeFile('./compile.xml', '</tokenizer>', (err)=>{
+
+
+contentXML+= '</tokenizer>';
+console.log(contentXML);
+
+
+fs.writeFile('./compile.xml', contentXML, (err)=>{
     console.log(err)
 })*/ 

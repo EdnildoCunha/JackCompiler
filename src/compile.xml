@@ -1,1 +1,30 @@
-test02izer>
+<class>
+<keyword>class</keyword>
+<identifier> Main </identifier>
+<symble> { </symble>
+<classVarDec>
+<keyword>field</keyword>
+<keyword>int</keyword>
+<identifier> x </identifier>
+<identifier> y </identifier>
+<symble> ; </symble>
+</classVarDec>
+<classVarDec>
+<keyword>static</keyword>
+<keyword>int</keyword>
+<identifier> pointCount </identifier>
+<symble> ; </symble>
+</classVarDec>
+<subroutineDec>
+<keyword>function</keyword>
+<keyword>void</keyword>
+<identifier> main </identifier>
+<symble> ( </symble>
+<parameterList>
+<expressionList>
+<expression>
+<term>
+</term>
+</expression>
+</expressionList>
+</parameterList>

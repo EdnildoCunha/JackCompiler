@@ -55,26 +55,27 @@ export class Tokenizer
         fs.writeFile('compile.xml', "", (err) => {
             // throws an error, you could also catch it here
             if (err){
-                console.log('error write file ', err);
+                //console.log('error write file ', err);
                 throw err;
             } 
         
             // success case, the file was saved
-            console.log('compile.xml saved');
+            //console.log('compile.xml saved');
         });
 
         fs.readFile(jackFile, 'utf8', (err, data) => {
             if (err)
             {
-                console.log("error read File.Jack");
-                console.log(err);
+                //console.log("error read File.Jack");
+                //console.log(err);
                 throw err;
             }
             //console.log("JackFile readed");
-            console.log(data);
-            console.log(data.length)
+            //console.log(data);
+            //console.log(data.length)
             this.JackFile = data.split("\n"); 
-            //console.log(this.JackFile[0])
+            //console.log('DATA FROM JACK')
+            //console.log(this.JackFile)
               //.replace(/(\r\n|\n|\r)/g,""); //.split(/\r?\n/);
             this.token = "";
             this.type = "";
@@ -82,7 +83,7 @@ export class Tokenizer
             //this.advance();
         });
 
-       /* setTimeout(()=>
+        /*setTimeout(()=>
         {
             console.log("<tokens>");
             while(this.hasMoreTokens())
@@ -113,24 +114,32 @@ export class Tokenizer
 
     advance()
     {
-        console.log('entered advance');
+        //console.log('entered advance');
         if(!this.hasMoreTokens())
         {
             return false;
         }
 
         this.currentLine = this.JackFile[this.indexLine];
-        this.currentWords = this.currentLine.split(" ");
-        //console.log('currentWords');
-        //console.log(this.currentWords);
+        console.log('CURRENT LINE ');
+        console.log(this.currentLine);
+        this.currentWords = this.currentLine.split(" ")
+        .map((ele)=>{return ele.replace(/(\r\n|\n|\r)/gm, "").trim();})//replace(/(\r\n|\n|\r)/gm, "")
+        .filter((ele)=>{
+            if(ele){
+                return true;
+            }
+        });
+        console.log('CURRENT WORDS');
+        console.log(this.currentWords);
 
-            if(this.currentWords[this.position] != " " &&  this.currentWords[this.position] != "")
-            {
-                this.currentWord = this.currentWords[this.position].replace(/[\r\n\t]/g, "");;
+            //if(this.currentWords[this.position] != " " &&  this.currentWords[this.position] != "")
+            //{
+                this.currentWord = this.currentWords[this.position].replace(/[\r\n\t]/g, "").trim();
                 this.token = this.currentWord;
                 this.type = this.tokenType()
                 console.log("token ", this.token, " tokenType ", this.type); 
-            }
+            //}
             this.position++;
 
         if( this.position >=  this.currentWords.length)
@@ -180,6 +189,7 @@ export class Tokenizer
         }
 
         const regIdentifier = new RegExp(idenRegex).exec(this.token);
+        //console.log('regex identifier ', regIdentifier);
         if(regIdentifier)
         {
             return TYPE.identifier;
@@ -198,11 +208,21 @@ export class Tokenizer
             return this.type;
         }   
         return "";*/
-        console.log('keyword token0 ', this.token);
-        console.log('condition keyword ', _keywords.includes(this.token));
+
+        /*console.log('condition keyword ', this.tokenType() == TYPE.keyword);
+
+        if(this.tokenType() == TYPE.keyword)
+        {
+            return this.token;   
+        }
+
+        return "";*/
+
+        //console.log('keyword token0 ', this.token);
+        //console.log('condition keyword ', _keywords.includes(this.token));
         if(_keywords.includes(this.token))
         {
-            console.log('keyword token ', this.token);
+            //console.log('keyword token ', this.token);
             return this.token;
         }
 
@@ -234,10 +254,14 @@ export class Tokenizer
             return this.token; //.type = TYPE.identifier;
         }   
         return "";*/
-
+        //console.log('identifier()', this.token) ;
+        //console.log('identifier condition ', this.tokenType() == 'identifier');
+        console.log('TOKENTYPE 22 ', this.tokenType())
         if(this.tokenType() == 'identifier'){
             return this.token;
         }
+
+        return "";
     }
 
     intVal()
@@ -276,55 +300,57 @@ export class Tokenizer
 
     printToken()
     {
-        console.log('ENTERED PRINT TOKEN');
+        //console.log('ENTERED PRINT TOKEN');
         if(this.tokenType() == TYPE.keyword)
         {
-            console.log(`<keyword>${this.token}</keyword>`);
-            return `<keyword>${this.token}</keyword>`;   
+            //console.log(`<keyword>${this.token}</keyword>`);
+            return `<keyword>${this.token}</keyword>\n`;   
         }
         else if(this.tokenType() == TYPE.symbol)
         {
             if(this.token == "<")
             {
-                console.log("<symbol> &lt; </symbol>");
-                return "<symbol> &lt; </symbol>"; 
+                //console.log("<symbol> &lt; </symbol>");
+                return "<symbol> &lt; </symbol>\n"; 
             }
             else if(this.token == ">")
             {
-                console.log("<symbol> &gt; </symbol>");
-                return "<symbol> &gt; </symbol>";
+                //console.log("<symbol> &gt; </symbol>");
+                return "<symbol> &gt; </symbol>\n";
             }
             else if(this.token == "&")
             {
-                console.log("<symbol> &gt; </symbol>");
-                return "<symbol> &gt; </symbol>";
+                //console.log("<symbol> &gt; </symbol>");
+                return "<symbol> &gt; </symbol>\n";
             }
             else
             {
-                console.log(`<symble> ${this.token} </symble>`);
-                return `<symble> ${this.token} </symble>`
+                //console.log(`<symble> ${this.token} </symble>`);
+                return `<symble> ${this.token} </symble>\n`
             }
         }
         else if(this.tokenType() == TYPE.identifier)
         {
-            console.log(`<identifier> ${this.token} </identifier>`)
-            return `<identifier> ${this.token} </identifier>`;
+            //console.log(`<identifier> ${this.token} </identifier>`)
+            return `<identifier> ${this.token} </identifier>\n`;
         }
         else if(this.tokenType() == TYPE.number)
         {
-            console.log(`<interger> ${this.token} </interger>`);
-            return `<interger> ${this.token} </interger>`;
+            //console.log(`<interger> ${this.token} </interger>`);
+            return `<interger> ${this.token} </interger>\n`;
         }
         else if(this.tokenType() == TYPE.string)
         {
-            console.log(`<string> ${this.token} </string>`);
-            return `<string> ${this.token} </string>`;
+            //console.log(`<string> ${this.token} </string>`);
+            return `<string> ${this.token} </string>\n`;
         }
         else 
         {
-            console.log(`token: ${this.token}`)
+            //console.log(`token: ${this.token}`)
             return `token: ${this.token}`;
         }
     }
+
+
 
 }
