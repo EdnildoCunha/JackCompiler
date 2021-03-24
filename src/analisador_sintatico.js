@@ -10,21 +10,34 @@ var expressions = "[{ | } | ( | ) | [ | ] | . |, | ; | + | - |  | /* | & || | < 
 ]";
 var AnalisadorSintatico = /** @class */ (function () {
     function AnalisadorSintatico(jackFile) {
+        var _this = this;
         this.tokenizer = new app_1.Tokenizer('Main.jack');
         this.XMLFile = "";
         this.xmlContent = "";
         try {
-            var data = fs.readFileSync(jackFile, 'utf8');
-            console.log(data);
-            this.jackFile = data.split("\n");
-            this.XMLFile = fs.readFile('compile.xml', 'utf8', function (err, data) {
+            fs.readFile(jackFile, 'utf8', function (err, data) {
                 if (err) {
+                    console.log('error in read file');
+                    console.log(err);
+                    throw err;
+                    ;
+                }
+                console.log('Jack code');
+                _this.jackFile = data.split("\n");
+                _this.compileClass();
+            });
+            //const data = fs.readFileSync(jackFile, 'utf8');
+            //console.log(data); 
+            //this.jackFile = data.split("\n");
+            /*this.XMLFile = fs.readFile('compile.xml', 'utf8', (err, data)=>{
+                if (err)
+                {
                     console.log(err);
                     throw err;
                 }
                 console.log('xml file ', data);
-            });
-            this.compileClass();
+            })*/
+            //this.compileClass();
         }
         catch (e) {
             console.log('Error:', e.stack);
@@ -34,6 +47,9 @@ var AnalisadorSintatico = /** @class */ (function () {
         console.log('entered compileClass');
         this.writeXML("<class>");
         this.tokenizer.advance();
+        setTimeout(function () {
+            console.log('3 second passed');
+        }, 3500);
         //aqui  precisa adicionar o arquivo
         if (this.tokenizer.keyWord() != 'class') {
             //wait for a class here
@@ -564,9 +580,10 @@ var AnalisadorSintatico = /** @class */ (function () {
         this.XMLFile += expression;
     }*/
     AnalisadorSintatico.prototype.writeXML = function (xmlContent) {
-        fs.writeFile('compile.xml', xmlContent, function (err) {
-            console.log(err);
-        });
+        console.log(xmlContent);
+        /*fs.writeFile('compile.xml', xmlContent, (err)=>{
+            console.log(err)
+        })*/
     };
     return AnalisadorSintatico;
 }());

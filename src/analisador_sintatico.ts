@@ -8,7 +8,6 @@ const keyword = "[\
 const expressions = "[{ | } | ( | ) | [ | ] | . |, | ; | + | - |  | /* | & || | < | > | = | ~ \
 ]";
 
-
 export class AnalisadorSintatico{
 
     tokenizer = new Tokenizer('Main.jack');
@@ -19,32 +18,53 @@ export class AnalisadorSintatico{
     {
         try 
         {
-            const data = fs.readFileSync(jackFile, 'utf8');
-            console.log(data); 
-            this.jackFile = data.split("\n");
+            fs.readFile(jackFile, 'utf8', (err, data)=>{
+                if(err)
+                {
+                    console.log('error in read file');
+                    console.log(err);
+                    throw err;;
+                }
 
-            this.XMLFile = fs.readFile('compile.xml', 'utf8', (err, data)=>{
+                console.log('Jack code');
+                this.jackFile = data.split("\n");
+                this.compileClass();
+
+            })
+
+            //const data = fs.readFileSync(jackFile, 'utf8');
+            //console.log(data); 
+            //this.jackFile = data.split("\n");
+
+            /*this.XMLFile = fs.readFile('compile.xml', 'utf8', (err, data)=>{
                 if (err)
                 {
                     console.log(err);
                     throw err;
                 }
                 console.log('xml file ', data);
-            })
+            })*/
 
-            this.compileClass();
+            //this.compileClass();
             
         } catch(e) {
             console.log('Error:', e.stack);
         }
+
     }
 
     compileClass()
     {
+
         console.log('entered compileClass');
         this.writeXML("<class>");
 
         this.tokenizer.advance();
+
+        setTimeout(()=>{
+            console.log('3 second passed')
+        }, 3500)
+
         //aqui  precisa adicionar o arquivo
         if(this.tokenizer.keyWord() != 'class')
         {   
@@ -886,9 +906,10 @@ export class AnalisadorSintatico{
 
     writeXML(xmlContent:string)
     {
-        fs.writeFile('compile.xml', xmlContent, (err)=>{
+        console.log(xmlContent);
+        /*fs.writeFile('compile.xml', xmlContent, (err)=>{
             console.log(err)
-        })
+        })*/
     }
   
 

@@ -113,6 +113,7 @@ export class Tokenizer
 
     advance()
     {
+        console.log('entered advance');
         if(!this.hasMoreTokens())
         {
             return false;
@@ -128,7 +129,7 @@ export class Tokenizer
                 this.currentWord = this.currentWords[this.position].replace(/[\r\n\t]/g, "");;
                 this.token = this.currentWord;
                 this.type = this.tokenType()
-                //console.log("token ", this.token, " tokenType ", this.type); 
+                console.log("token ", this.token, " tokenType ", this.type); 
             }
             this.position++;
 
@@ -197,11 +198,15 @@ export class Tokenizer
             return this.type;
         }   
         return "";*/
-
+        console.log('keyword token0 ', this.token);
+        console.log('condition keyword ', _keywords.includes(this.token));
         if(_keywords.includes(this.token))
         {
+            console.log('keyword token ', this.token);
             return this.token;
         }
+
+        return "";
     }
 
     symbol()

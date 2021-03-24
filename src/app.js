@@ -37,10 +37,10 @@ var Tokenizer = /** @class */ (function () {
         this.token = null; //variable that receive current token
         this.JackFile = new Array(); //receive lines of jack file
         /* VARIABLES FOR CONTROL */
-        this.currentLine = ""; // the current line of the input
-        this.currentWords = []; // the current words of the line. splitted by whitespace
-        this.position = 0; // the current position of word in currentWords
-        this.currentWord = ""; // the current processing word
+        this.currentLine = ""; //current line
+        this.currentWords = []; //current words of the line
+        this.position = 0; //current position of word in currentWords
+        this.currentWord = ""; //current word
         fs.writeFile('compile.xml', "", function (err) {
             // throws an error, you could also catch it here
             if (err) {
@@ -80,13 +80,6 @@ var Tokenizer = /** @class */ (function () {
              console.log("</tokens>");
  
          },3000);*/
-        /*const readStream = fs.createReadStream(jackFile, 'utf8');
-
-        readStream.on('data', (chunk) => {
-            this.indexLine += chunk;
-        }).on('end', (data:any) => {
-            console.log(data);
-        });*/
     }
     Tokenizer.prototype.hasMoreTokens = function () {
         if (this.indexLine < this.JackFile.length) {
@@ -97,6 +90,7 @@ var Tokenizer = /** @class */ (function () {
         return false;
     };
     Tokenizer.prototype.advance = function () {
+        console.log('entered advance');
         if (!this.hasMoreTokens()) {
             return false;
         }
@@ -104,17 +98,14 @@ var Tokenizer = /** @class */ (function () {
         this.currentWords = this.currentLine.split(" ");
         //console.log('currentWords');
         //console.log(this.currentWords);
-        //while(this.position < this.currentWords.length)
-        //{
         if (this.currentWords[this.position] != " " && this.currentWords[this.position] != "") {
             this.currentWord = this.currentWords[this.position].replace(/[\r\n\t]/g, "");
             ;
             this.token = this.currentWord;
             this.type = this.tokenType();
-            //console.log("token ", this.token, " tokenType ", this.type); 
+            console.log("token ", this.token, " tokenType ", this.type);
         }
         this.position++;
-        //}
         if (this.position >= this.currentWords.length) {
             //console.log('change line');
             this.position = 0;
@@ -162,9 +153,13 @@ var Tokenizer = /** @class */ (function () {
             return this.type;
         }
         return "";*/
+        console.log('keyword token0 ', this.token);
+        console.log('condition keyword ', _keywords.includes(this.token));
         if (_keywords.includes(this.token)) {
+            console.log('keyword token ', this.token);
             return this.token;
         }
+        return "";
     };
     Tokenizer.prototype.symbol = function () {
         /*const regex = new RegExp(symbolRegex).exec(this.token);

@@ -1,35 +1,60 @@
-import { AnalisadorSintatico }  from './analisador_sintatico';
+//import { AnalisadorSintatico }  from './analisador_sintatico';
+import * as fs from "fs";
+
 
 //import { Tokenizer } from './app';
 
 //new Tokenizer('Main.jack');
 
-new AnalisadorSintatico('Main.jack');
+//new AnalisadorSintatico('Main.jack');
 ////t.compileClass();
 
-/*import * as fs from 'fs';
+function writeXMLT(xmlContent:string){
+        fs.writeFile('./compile.xml', xmlContent, (err)=>{
+            console.log(err)
+        })
+}
 
-let indexLine:any = '';
-fs.readFile('Main.jack', 'utf8', (err, data) => {
-    if (err) throw err;
-    console.log('data01');
-    console.log(data);
-    if(data.length != 0)
+//let contentXML:any = '';
+
+/*fs.readFile('./compile.xml', 'utf8', (err, data)=>{
+    if (err)
     {
-        this.indexLine = data;
+        console.log(err);
+        throw err;
     }
-    //this.token = "";
-});
+    console.log('xml file ', data);
+})
+*/
+const teste:string[] = [
+    'teste0',
+    'teste1',
+    'test02'
+] 
 
-const readStream = fs.createReadStream('Main.jack', 'utf8');
+fs.writeFile('./compile.xml', '<tokenizer>', (err)=>{
+    console.log(err)
+})
 
-readStream
-.on('data', (chunk) => {
-    //this.indexLine += chunk;
-    console.log('chunk');
-    console.log(chunk);
-    return chunk;
-}).on('end', () => {
-    console.log('data02');
-    //console.log(data);
-});*/
+//contentXML+= '<tokenizer>';
+
+
+for(let token of teste)
+{
+   //writeXMLT(token);   
+   //contentXML += token;
+   console.log(token)
+   fs.writeFile('./compile.xml', token, (err)=>{
+        console.log(err)
+    })
+
+}
+
+
+//contentXML+= '</tokenizer>';
+//console.log(contentXML);
+
+
+/*fs.writeFile('./compile.xml', '</tokenizer>', (err)=>{
+    console.log(err)
+})*/
