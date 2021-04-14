@@ -104,7 +104,7 @@ export class AnalisadorSintatico{
         while(
                 ["constructor", "function", "method"].includes(this.tokenizer.keyWord())
             ){
-                this.compileSubtoutine();
+                this.compileSubroutine();
             }
 
         //await for close }    
@@ -188,7 +188,7 @@ export class AnalisadorSintatico{
     }
 
 
-    compileSubtoutine()
+    compileSubroutine()
     {
         console.log('entered compileSuboutine');
         this.writeXMLContent("<subroutineDec>\n")
@@ -497,7 +497,7 @@ export class AnalisadorSintatico{
 
         //wait subroutine
         //CHECAR AQUI
-        this.compileSubtoutine();
+        this.compileSubroutine();
 
         //wait for ;
         if(this.tokenizer.symbol() != ";")
