@@ -1,5 +1,7 @@
 import * as fs from "fs";
 import { Tokenizer, TYPE } from './app';
+import {SymbolTable} from './symboltable';
+import {VMwriter} from './vmwriter';
 
 const keyword = "[\
     class | constructor | function |method | field | static | var |int | char | boolean | void |true |false | null | this | let | do |if | else | while | return \
@@ -11,6 +13,7 @@ const expressions = "[{ | } | ( | ) | [ | ] | . |, | ; | + | - |  | /* | & || | 
 export class AnalisadorSintatico{
 
     tokenizer = new Tokenizer('Main.jack');
+    
     private jackFile:any;
     private XMLFile:any = "";
     private xmlContent:string = "";
@@ -132,6 +135,7 @@ export class AnalisadorSintatico{
         }
 
         this.writeXMLContent(this.tokenizer.printToken());
+        
 
         this.tokenizer.advance();
 
@@ -153,6 +157,8 @@ export class AnalisadorSintatico{
 
         this.tokenizer.advance();
 
+        
+
         //check for varname
 
 
@@ -160,6 +166,7 @@ export class AnalisadorSintatico{
                 this.tokenizer.symbol() == ","
             )
             {
+
             
                 this.tokenizer.advance();
             
@@ -191,6 +198,8 @@ export class AnalisadorSintatico{
     compileSubroutine()
     {
         console.log('entered compileSuboutine');
+        
+
         this.writeXMLContent("<subroutineDec>\n")
         //compile constructor, function or method
         console.log('SUBROUTINE KEYWORD ', this.tokenizer.keyWord())

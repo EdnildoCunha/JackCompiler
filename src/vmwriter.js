@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+exports.VMwriter = void 0;
 var fs = require("fs");
 var Command;
 (function (Command) {
@@ -24,46 +25,47 @@ var Segment;
     Segment["POINTER"] = "pointer";
     Segment["TEMP"] = "temp";
 })(Segment || (Segment = {}));
-var vmwriter = /** @class */ (function () {
-    function vmwriter() {
+var VMwriter = /** @class */ (function () {
+    function VMwriter() {
         this.OutputCommand = '';
     }
-    vmwriter.prototype.writePush = function (segment, index) {
+    VMwriter.prototype.writePush = function (segment, index) {
         //escrever função
-        this.OutputCommand = 'push ${segment} ${index}';
+        this.OutputCommand = "push " + segment + " " + index;
     };
-    vmwriter.prototype.writePop = function (segment, index) {
+    VMwriter.prototype.writePop = function (segment, index) {
         //escrever função
-        this.OutputCommand = 'pop ${segment} ${index}';
+        this.OutputCommand = "pop " + segment + " " + index;
     };
-    vmwriter.prototype.writeArithmetic = function (command) {
-        this.OutputCommand = '${command}';
+    VMwriter.prototype.writeArithmetic = function (command) {
+        this.OutputCommand = "" + command;
     };
-    vmwriter.prototype.writeLabel = function (label) {
-        this.OutputCommand = "label ${label}";
+    VMwriter.prototype.writeLabel = function (label) {
+        this.OutputCommand = "label " + label;
     };
-    vmwriter.prototype.writeGOTO = function (label) {
-        this.OutputCommand = 'goto ${label}';
+    VMwriter.prototype.writeGOTO = function (label) {
+        this.OutputCommand = "goto " + label;
     };
-    vmwriter.prototype.writeIf = function (label) {
-        this.OutputCommand = 'if-goto ${label}';
+    VMwriter.prototype.writeIf = function (label) {
+        this.OutputCommand = "if-goto " + label;
     };
-    vmwriter.prototype.writeCall = function (name, nArgs) {
-        this.OutputCommand = 'call ${name} ${nArgs}';
+    VMwriter.prototype.writeCall = function (name, nArgs) {
+        this.OutputCommand = "call " + name + " " + nArgs;
     };
-    vmwriter.prototype.writeFunction = function (name, nLocals) {
-        this.OutputCommand = 'function ${name} ${nLocals}';
+    VMwriter.prototype.writeFunction = function (name, nLocals) {
+        this.OutputCommand = "function " + name + " " + nLocals;
     };
-    vmwriter.prototype.writeReturn = function () {
+    VMwriter.prototype.writeReturn = function () {
         this.OutputCommand = 'return';
     };
-    vmwriter.prototype.writeOutputFile = function (OutputCommand) {
+    VMwriter.prototype.writeOutputFile = function (OutputCommand) {
         this.OutputCommand += OutputCommand;
     };
-    vmwriter.prototype.writeVM = function () {
+    VMwriter.prototype.writeVM = function () {
         fs.writeFile('Outputcode.vm', this.OutputCommand, function (err) {
             console.log(err);
         });
     };
-    return vmwriter;
+    return VMwriter;
 }());
+exports.VMwriter = VMwriter;

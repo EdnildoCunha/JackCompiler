@@ -15,7 +15,7 @@ interface VarCount{
 }
 
 
-class SymbolTable{
+export class SymbolTable{
 
     varCount: VarCount = {
         ARG: 0,

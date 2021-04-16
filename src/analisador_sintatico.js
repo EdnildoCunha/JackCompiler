@@ -74,7 +74,7 @@ var AnalisadorSintatico = /** @class */ (function () {
         }
         //console.log('FIRST WHILE 3 ', ["constructor", "function", "method"].includes(this.tokenizer.keyWord()));
         while (["constructor", "function", "method"].includes(this.tokenizer.keyWord())) {
-            this.compileSubtoutine();
+            this.compileSubroutine();
         }
         //await for close }    
         if (this.tokenizer.symbol() != "}") {
@@ -121,7 +121,7 @@ var AnalisadorSintatico = /** @class */ (function () {
         this.tokenizer.advance();
         this.writeXMLContent("</classVarDec>\n");
     };
-    AnalisadorSintatico.prototype.compileSubtoutine = function () {
+    AnalisadorSintatico.prototype.compileSubroutine = function () {
         console.log('entered compileSuboutine');
         this.writeXMLContent("<subroutineDec>\n");
         //compile constructor, function or method
@@ -314,7 +314,7 @@ var AnalisadorSintatico = /** @class */ (function () {
         this.tokenizer.advance();
         //wait subroutine
         //CHECAR AQUI
-        this.compileSubtoutine();
+        this.compileSubroutine();
         //wait for ;
         if (this.tokenizer.symbol() != ";") {
             return false;

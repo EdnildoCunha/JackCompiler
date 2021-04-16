@@ -1,3 +1,6 @@
+"use strict";
+exports.__esModule = true;
+exports.SymbolTable = void 0;
 var KIND;
 (function (KIND) {
     KIND["STATIC"] = "static";
@@ -85,3 +88,4 @@ var SymbolTable = /** @class */ (function () {
     };
     return SymbolTable;
 }());
+exports.SymbolTable = SymbolTable;

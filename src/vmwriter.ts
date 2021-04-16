@@ -26,44 +26,44 @@ enum Segment{
     
 }
 
-class vmwriter{
+export class VMwriter{
     private OutputCommand:string = '';
     writePush(segment: Segment, index:number){
 //escrever função
-        this.OutputCommand = 'push ${segment} ${index}';
+        this.OutputCommand = `push ${segment} ${index}`;
 
     }
 
     writePop(segment:Segment, index: number){
 //escrever função
-        this.OutputCommand = 'pop ${segment} ${index}'
+        this.OutputCommand = `pop ${segment} ${index}`;
     }
 
     writeArithmetic(command: Command){
-        this.OutputCommand = '${command}';
+        this.OutputCommand = `${command}`;
     
         
     }
 
     writeLabel(label: String){
-        this.OutputCommand = "label ${label}"
+        this.OutputCommand = `label ${label}`;
 
     }
     writeGOTO(label: String){
-        this.OutputCommand = 'goto ${label}'
+        this.OutputCommand = `goto ${label}`
         
     }
 
     writeIf(label: String){
-        this.OutputCommand = 'if-goto ${label}'
+        this.OutputCommand = `if-goto ${label}`
 
     }
     writeCall(name: String, nArgs: number){
-        this.OutputCommand = 'call ${name} ${nArgs}'
+        this.OutputCommand = `call ${name} ${nArgs}`
 
     }
     writeFunction(name: String, nLocals: number){
-        this.OutputCommand = 'function ${name} ${nLocals}'
+        this.OutputCommand = `function ${name} ${nLocals}`
 
     }
     writeReturn(){
