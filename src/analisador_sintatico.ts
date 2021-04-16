@@ -13,7 +13,10 @@ const expressions = "[{ | } | ( | ) | [ | ] | . |, | ; | + | - |  | /* | & || | 
 export class AnalisadorSintatico{
 
     tokenizer = new Tokenizer('Main.jack');
-    
+    st = new SymbolTable();
+    vm = new VMwriter();
+
+
     private jackFile:any;
     private XMLFile:any = "";
     private xmlContent:string = "";
@@ -139,10 +142,13 @@ export class AnalisadorSintatico{
 
         this.tokenizer.advance();
 
+
         if(!this.tokenizer.identifier() && !["int", "char", "boolean"].includes(this.tokenizer.keyWord()))
         {
             return false;
         }
+
+        
 
         this.writeXMLContent(this.tokenizer.printToken());
 
@@ -154,7 +160,8 @@ export class AnalisadorSintatico{
         }
 
         this.writeXMLContent(this.tokenizer.printToken());
-
+        
+        
         this.tokenizer.advance();
 
         
@@ -198,6 +205,8 @@ export class AnalisadorSintatico{
     compileSubroutine()
     {
         console.log('entered compileSuboutine');
+
+      
         
 
         this.writeXMLContent("<subroutineDec>\n")

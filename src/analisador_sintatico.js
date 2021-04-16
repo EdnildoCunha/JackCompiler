@@ -3,6 +3,8 @@ exports.__esModule = true;
 exports.AnalisadorSintatico = void 0;
 var fs = require("fs");
 var app_1 = require("./app");
+var symboltable_1 = require("./symboltable");
+var vmwriter_1 = require("./vmwriter");
 var keyword = "[\
     class | constructor | function |method | field | static | var |int | char | boolean | void |true |false | null | this | let | do |if | else | while | return \
 ]";
@@ -12,6 +14,8 @@ var AnalisadorSintatico = /** @class */ (function () {
     function AnalisadorSintatico(jackFile) {
         var _this = this;
         this.tokenizer = new app_1.Tokenizer('Main.jack');
+        this.st = new symboltable_1.SymbolTable();
+        this.vm = new vmwriter_1.VMwriter();
         this.XMLFile = "";
         this.xmlContent = "";
         try {
